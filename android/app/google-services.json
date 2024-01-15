@@ -1,0 +1,29 @@
+{
+  "project_info": {
+    "project_number": "11749380327",
+    "project_id": "smart-bill-eda08",
+    "storage_bucket": "smart-bill-eda08.appspot.com"
+  },
+  "client": [
+    {
+      "client_info": {
+        "mobilesdk_app_id": "1:11749380327:android:f8ef54ffe9ad5dd0019242",
+        "android_client_info": {
+          "package_name": "com.example.smart_school_bill"
+        }
+      },
+      "oauth_client": [],
+      "api_key": [
+        {
+          "current_key": "AIzaSyAfH5jOcFsfBf4big2_CWKC68ujXEVJ3Ho"
+        }
+      ],
+      "services": {
+        "appinvite_service": {
+          "other_platform_oauth_client": []
+        }
+      }
+    }
+  ],
+  "configuration_version": "1"
+}
