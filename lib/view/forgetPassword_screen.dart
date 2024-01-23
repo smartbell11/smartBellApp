@@ -1,6 +1,5 @@
 import 'package:flutter/material.dart';
 import 'package:get/get.dart';
-import 'package:smart_school_bill/style/app_color.dart';
 import 'package:smart_school_bill/style/fonts.dart';
 import 'package:smart_school_bill/widgets/custom_input.dart';
 
@@ -8,7 +7,7 @@ import '../controller/forgetPassword_controller.dart';
 
 class ForgetPasswordScreen extends GetView<ForgetPasswordController>{
   const ForgetPasswordScreen({super.key});
-  @override
+
    @override
   Widget build(BuildContext context) {
 

@@ -10,7 +10,7 @@ class BellControlController extends GetxController {
     initSwitchStates();
   }
   final Map<String, RxBool> switchStates = {
-    '09:43 PM':true.obs,
+    //'10:45 AM':true.obs,
     '06:30 AM': true.obs,
     '07:00 AM': true.obs,
     '07:45 AM': true.obs,

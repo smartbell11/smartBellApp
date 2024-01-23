@@ -3,10 +3,8 @@ import 'package:flutter/material.dart';
 import 'package:get/get.dart';
 import 'package:smart_school_bill/controller/login_controller.dart';
 import 'package:smart_school_bill/routes/app_pages.dart';
-import 'package:smart_school_bill/style/app_color.dart';
 import 'package:smart_school_bill/style/fonts.dart';
 import 'package:smart_school_bill/style/images.dart';
-
 
 class FirstScreen  extends  GetView<LoginController> {
    const FirstScreen ({super.key});

@@ -4,7 +4,6 @@ import 'package:flutter/material.dart';
 import 'package:get/get.dart';
 import 'package:smart_school_bill/controller/login_controller.dart';
 import 'package:smart_school_bill/routes/app_pages.dart';
-import 'package:smart_school_bill/style/app_color.dart';
 import 'package:smart_school_bill/style/fonts.dart';
 import 'package:smart_school_bill/style/images.dart';
 import 'package:smart_school_bill/widgets/custom_input.dart';
@@ -39,9 +38,7 @@ class LoginScreen  extends  GetView<LoginController> {
                     controller: controller.emailC, label:  'Email', hint: ''),
                     
                                                   const SizedBox(height: 16),
-    
-                            
-                          
+
                       CustomInput(
                       
                     controller: controller.passC, label:  'Password', hint: '',obscureText: true),

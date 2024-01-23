@@ -77,7 +77,7 @@ class SettingsScreen extends GetView<HomeController> {
             right: 12.0,
             child: SizedBox(
               width: double.infinity,
-              height: size.height * 0.37,
+              height: size.height * 0.38,
               child: Container(
               padding: EdgeInsets.all(26.0),
               decoration: BoxDecoration(

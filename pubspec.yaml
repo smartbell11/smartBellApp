@@ -44,6 +44,8 @@ dependencies:
   shared_preferences: ^2.2.2
   intl: ^0.18.1
   google_nav_bar: ^5.0.6
+  flutter_background_service: ^3.0.0
+
 #  fluttertoast:
 dev_dependencies:
   flutter_test:

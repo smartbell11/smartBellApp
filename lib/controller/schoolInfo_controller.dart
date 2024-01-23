@@ -6,15 +6,15 @@ import 'package:shared_preferences/shared_preferences.dart';
 import 'package:smart_school_bill/widgets/custom_toast.dart';
 
 class SchoolInfoController extends GetxController {
-
+ late SharedPreferences _prefs;
     @override
   void onInit() async {
     super.onInit();
     _prefs = await SharedPreferences.getInstance();
-    _loadUserlocalInfo();
+   _loadUserlocalInfo();
   }
 
-    late SharedPreferences _prefs;
+   
 
    FirebaseAuth auth = FirebaseAuth.instance;
   FirebaseFirestore firestore = FirebaseFirestore.instance;
@@ -24,7 +24,6 @@ class SchoolInfoController extends GetxController {
 
     TextEditingController emailC = TextEditingController();
 
-  TextEditingController passC = TextEditingController();
 
   var isLoading = false.obs;
 
@@ -44,6 +43,7 @@ class SchoolInfoController extends GetxController {
  // _prefs.setString('phone', phoneC.text);
   _prefs.setString('email', emailC.text);
 }
+
 Future<void> updateInfo() async {
 
     if (nameC.text.isNotEmpty) {
@@ -63,10 +63,10 @@ Future<void> updateInfo() async {
 _updateUserlocalInfo();
       
       } catch (e) {
-        CustomToast.errorToast('Error');
+        CustomToast.errorToast('Error $e');
                          isLoading = false.obs;
 
-      } finally {}
+      } 
     } else {
       CustomToast.errorToast('You need to fill all fields');
                                isLoading = false.obs;

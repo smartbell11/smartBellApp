@@ -2,14 +2,9 @@
 import 'package:cloud_firestore/cloud_firestore.dart';
 import 'package:flutter/material.dart';
 import 'package:get/get.dart';
-import 'package:smart_school_bill/controller/login_controller.dart';
 import 'package:smart_school_bill/controller/schedule_controller.dart';
-import 'package:smart_school_bill/controller/signUp_controller.dart';
-import 'package:smart_school_bill/style/app_color.dart';
-import 'package:smart_school_bill/style/fonts.dart';
 import 'package:smart_school_bill/view/addSchedule_screen.dart';
 import 'package:smart_school_bill/view/editSchedule_screen.dart';
-import 'package:smart_school_bill/widgets/custom_input.dart';
 
 class ScheduleScreen  extends  GetView<ScheduleController> {
    const ScheduleScreen ({super.key});

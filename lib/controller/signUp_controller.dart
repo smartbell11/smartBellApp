@@ -31,6 +31,7 @@ if(schoolNameC.text == "" || emailC.text == "" || passC.text == "" || confirmPas
           
 
       UserCredential userCredential =
+     
           await auth.createUserWithEmailAndPassword(
         email: emailC.text.trim(),
         password: passC.text.trim(),
@@ -60,7 +61,7 @@ if(schoolNameC.text == "" || emailC.text == "" || passC.text == "" || confirmPas
 
       if (e.code == 'weak-password') {
         print('The password provided is too weak.');
-                CustomToast.successToast('Your password is too week it should be at least 6 characters');
+                CustomToast.errorToast('Your password is too week it should be at least 6 characters');
 
 
       } else if (e.code == 'email-already-in-use') {

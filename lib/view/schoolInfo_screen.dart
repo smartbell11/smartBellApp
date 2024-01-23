@@ -3,7 +3,6 @@
 import 'package:flutter/material.dart';
 import 'package:get/get.dart';
 import 'package:smart_school_bill/controller/schoolInfo_controller.dart';
-import 'package:smart_school_bill/style/app_color.dart';
 import 'package:smart_school_bill/widgets/custom_input.dart';
 
 import '../../style/fonts.dart';
@@ -37,29 +36,25 @@ class SchoolInfoScreen extends GetView<SchoolInfoController> {
                         const SizedBox(height: 16),
                        CustomInput(
                   controller: controller.emailC, label:  'Email', hint: '', disabled: true),
-                  
+
                                                 const SizedBox(height: 16),
                            CustomInput(
                   controller: controller.nameC, label:  'Name', hint: ''),
-                  
-                        
-                        const SizedBox(height: 16),
-                       
-    
-                        
-                        const SizedBox(height: 16),
-                         
 
-                          
-                        
-              
-    
+
+                        const SizedBox(height: 16),
+
+
+
+                        const SizedBox(height: 16),
+
+
                       ],
                     ),
                   ),
                 ),
 
-     
+
   Padding(
             padding: const EdgeInsets.all(8.0),
             child:SizedBox(

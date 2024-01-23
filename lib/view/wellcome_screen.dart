@@ -3,19 +3,13 @@ import 'package:cloud_firestore/cloud_firestore.dart';
 import 'package:flutter/material.dart';
 import 'package:get/get.dart';
 import 'package:smart_school_bill/controller/home_controller.dart';
-import 'package:smart_school_bill/controller/login_controller.dart';
-import 'package:smart_school_bill/routes/app_pages.dart';
-import 'package:smart_school_bill/style/app_color.dart';
 import 'package:smart_school_bill/style/fonts.dart';
 import 'package:smart_school_bill/style/images.dart';
-import 'package:smart_school_bill/widgets/custom_input.dart';
-
 class WellcomeScreen  extends  GetView<HomeController> {
    const WellcomeScreen ({super.key});
 
   @override
   Widget build(BuildContext context) {
-       int numberOfSchedules= 0;
 
           var size = MediaQuery.of(context).size;
 
@@ -91,7 +85,6 @@ class WellcomeScreen  extends  GetView<HomeController> {
                             itemCount: data.length,
                                   itemBuilder: (context, index) {
                                      var document = data[index];
-                                     var id = document.id;
                                     return SingleChildScrollView(
                                       child: Container(
                                         alignment: Alignment.center,
@@ -100,13 +93,11 @@ class WellcomeScreen  extends  GetView<HomeController> {
                                          height: size.height * 0.14,
                                         width: double.infinity,
                                         decoration: BoxDecoration(
-                                       
                                           color: Color(0xff525CEB),
                                           borderRadius: BorderRadius.circular(15),
                                         ),
                                         child: ListTile(
                                           leading: Text(
-                                            
                                              document['className'],
                                               style: TextStyle(
                                                 color: Colors.white,
@@ -137,22 +128,6 @@ class WellcomeScreen  extends  GetView<HomeController> {
               }
               ),
             )   
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
           ),
         ],
       ),
