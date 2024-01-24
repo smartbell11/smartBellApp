@@ -1,9 +1,7 @@
 import 'dart:async';
 import 'package:cloud_firestore/cloud_firestore.dart';
-import 'package:firebase_database/firebase_database.dart';
 import 'package:get/get.dart';
 import 'package:get/get_state_manager/src/simple/get_controllers.dart';
-import 'package:intl/intl.dart';
 import 'package:smart_school_bill/widgets/custom_toast.dart';
 
 class BellControlController extends GetxController {
@@ -12,6 +10,10 @@ class BellControlController extends GetxController {
   void onInit() {
     super.onInit();
       initSwitchStates();
+  }
+
+  void updateGlobalSwitchState(bool value) {
+    globalSwitchState.value = value;
   }
     FirebaseFirestore firestore = FirebaseFirestore.instance;
 
@@ -39,13 +41,13 @@ Future<List<Map<String, dynamic>>> fetchTimesFromSchedule() async {
 
 
   final Map<String, RxBool> switchStates = {};
-
+ final RxBool globalSwitchState = true.obs;
 
 void StopAllTimes() async {
     try {
       QuerySnapshot querySnapshot = await firestore.collection("schedule").get();
          CustomToast.successToast( 'All times stopped' );
-
+  globalSwitchState.value = false;
       for (QueryDocumentSnapshot document in querySnapshot.docs) {
         await document.reference.update({'isStopped': true});
       }
@@ -58,7 +60,7 @@ void ResumeAllTimes() async {
     try {
       QuerySnapshot querySnapshot = await firestore.collection("schedule").get();
          CustomToast.successToast( 'All times Resumed' );
-
+ globalSwitchState.value = true;
       for (QueryDocumentSnapshot document in querySnapshot.docs) {
         await document.reference.update({'isStopped': false});
       }
@@ -95,7 +97,7 @@ void toggleBellSwitch(String docId, String time, bool value) async {
     if (documentExists) {
       if (!value) {
         await scheduleRef.update({'isStopped': true});
-        CustomToast.successToast('Bell disabled at $docId');
+        CustomToast.successToast('Bell disabled at $time');
       } else {
         await scheduleRef.update({'isStopped': false});
         CustomToast.successToast('Bell enabled at $time');
