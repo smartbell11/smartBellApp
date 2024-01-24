@@ -30,7 +30,7 @@ class ScheduleScreen  extends  GetView<ScheduleController> {
                             Expanded(
                               child:  StreamBuilder<QuerySnapshot<Map<String, dynamic>>>(
                   stream: FirebaseFirestore.instance
-                      .collection('schedule').orderBy("createdAt")
+                      .collection('schedule').orderBy("selectedStartTime")
                       .snapshots(),
                   builder: (context, AsyncSnapshot<QuerySnapshot<Map<String, dynamic>>> snapshot) {
                     if (snapshot.hasData) {
@@ -47,7 +47,6 @@ class ScheduleScreen  extends  GetView<ScheduleController> {
                                 _showEditDialog(
       context,
       document['className'],
-      document['selectedStartDate'],
       document['selectedStartTime'],
       document['duration'],
       id
@@ -76,7 +75,7 @@ class ScheduleScreen  extends  GetView<ScheduleController> {
                                         ),
                                         title: Text(
                                   
-                                          'Day: ${document['selectedStartDate']}\nStarts at: ${document['selectedStartTime']}\n For:${document['duration']} seconds',
+                                          'Starts at: ${document['selectedStartTime']}\n For:${document['duration']} seconds',
                                        style:  TextStyle(
                                                 color: Colors.white,
                                                 fontSize: 12,
@@ -136,11 +135,11 @@ width: size.width * 0.5,
       },
     );
   }
-void _showEditDialog(BuildContext context, String className, String startDate, String startTime, String duration, String id) {
+void _showEditDialog(BuildContext context, String className, String startTime, String duration, String id) {
   showDialog(
     context: context,
     builder: (BuildContext context) {
-      return EditSchedule(className: className, startDate: startDate, startTime: startTime, duration: duration, id:id);
+      return EditSchedule(className: className,startTime: startTime, duration: duration, id:id);
     },
   );
 }

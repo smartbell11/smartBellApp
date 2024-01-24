@@ -4,8 +4,10 @@ import 'package:cloud_firestore/cloud_firestore.dart';
 import 'package:firebase_database/firebase_database.dart';
 import 'package:flutter/material.dart';
 import 'package:get/get.dart';
+import 'package:intl/intl.dart';
 import 'package:shared_preferences/shared_preferences.dart';
 class HomeController extends GetxController {
+    FirebaseFirestore firestore = FirebaseFirestore.instance;
 
    late SharedPreferences _prefs;
 var schoolName = "".obs;
@@ -24,7 +26,7 @@ startLoop() ;
   RxInt scheduleCount = 0.obs; 
 
 
-  void fetchScheduleCount() async {
+  Future<void> fetchScheduleCount() async {
     try {
       QuerySnapshot<Map<String, dynamic>> snapshot = await FirebaseFirestore.instance
           .collection('schedule')
@@ -47,50 +49,68 @@ startLoop() ;
   return '$formattedHour:${timeOfDay.minute.toString().padLeft(2, '0')} $period';
 }
 
-void startLoop() async{
-  
-    DateTime now = DateTime.now();
-    String deviceTime = formatTimeWithAMPM(now);
 
-    // Check if the current time matches any of the specified times
-    if (deviceTime == '10:45 AM' || deviceTime == '06:30 AM' || deviceTime == '07:00 AM' || deviceTime == '07:45 AM' || deviceTime == '08:30 AM' || deviceTime == '09:00 AM' || deviceTime == '09:30 AM' || deviceTime == '10:45 AM' || deviceTime == '11:30 AM' || deviceTime == '12:15 PM') {
-      // Check if the current day is Friday (5) or Saturday (6)
-      if (now.weekday != DateTime.friday && now.weekday != DateTime.saturday) {
-        // Call the function to check and update Firebase
-        await checkAndUpdateFirebase(deviceTime);
-        print('Time matched: $deviceTime');
-      } else {
-        print('Today is Friday or Saturday. Firebase value not changed.');
-      }
-      // Pause the timer until the next day to avoid unnecessary calls
-    }
-  
-}
 
-  Future<void> checkAndUpdateFirebase(String deviceTime) async {
-  DatabaseReference reference = FirebaseDatabase.instance.reference().child('bell');
+void startLoop() async {
+  DateTime now = DateTime.now();
+  String deviceTime = formatTimeWithAMPM(now);
 
-  SharedPreferences prefs = await SharedPreferences.getInstance();
-  Set<String> keys = prefs.getKeys();
+  QuerySnapshot<Map<String, dynamic>> scheduleSnapshot =
+      await firestore.collection("schedule").get();
 
-  // Check if all times are stopped
-  if (keys.any((key) => key == 'stop_all_times') && prefs.getBool('stop_all_times') == true) {
-    print('All times are stopped. Firebase value not changed.');
-  } else {
-    // Check if the specified time is stored in shared preferences
-    if (keys.any((key) => key == 'bell_disabled_time_$deviceTime')) {
-      print('Time $deviceTime is stored in SharedPreferences. Firebase value not changed.');
+  List<String> selectedStartTimes = scheduleSnapshot.docs
+      .map<String>((doc) => doc['selectedStartTime'] as String)
+      .toList();
+
+  if (selectedStartTimes.contains(deviceTime)) {
+    if (now.weekday != DateTime.friday && now.weekday != DateTime.saturday) {
+      await checkAndUpdateFirebase(deviceTime);
+      print('Time matched: $deviceTime');
     } else {
-      // Update Firebase value if the time is not stored
-      reference.update({'ring': 1});
-      print('Updated Firebase ring value to 1.');
+      print('Today is Friday or Saturday. Firebase value not changed.');
     }
   }
+}
 
-  Timer(Duration(seconds: 30), () {
+
+
+
+
+Future<void> checkAndUpdateFirebase(String deviceTime) async {
+  DatabaseReference reference = FirebaseDatabase.instance.reference().child('bell');
+
+  QuerySnapshot<Map<String, dynamic>> scheduleSnapshot =
+      await firestore.collection("schedule").where("selectedStartTime", isEqualTo: deviceTime).get();
+
+  bool isStopped = false;
+  int durationInSeconds = 0;
+
+  if (scheduleSnapshot.docs.isNotEmpty) {
+    isStopped = scheduleSnapshot.docs.first['isStopped'];
+    durationInSeconds = int.parse(scheduleSnapshot.docs.first['duration']);
+  }
+
+  if (isStopped) {
+    print('The specified time $deviceTime is stopped. Firebase value not changed.');
+  } else {
+    reference.update({'ring': 1});
+    changeTime() ;
+    print('Updated Firebase ring value to 1.');
+
+    await Future.delayed(Duration(seconds: durationInSeconds));
     reference.update({'ring': 0});
-    print('Updated ring to 0 after 30 seconds.');
-  });
+    print('Reset Firebase ring value to 0 after $durationInSeconds seconds.');
+  }
+}
+
+
+
+Future<void> changeTime() async {
+     String formattedTime = DateFormat('h:mm a').format(DateTime.now());
+   FirebaseDatabase.instance
+          .reference()
+          .child("bell")
+          .update({"Time": formattedTime});
 }
 
 

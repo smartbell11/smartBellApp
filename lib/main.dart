@@ -15,8 +15,8 @@ import 'helper/git_di.dart' as di;
  
 void main() async{
    WidgetsFlutterBinding.ensureInitialized();
-   await Firebase.initializeApp(options: DefaultFirebaseOptions.currentPlatform);
-   //await initservice();
+ //  await Firebase.initializeApp(options: DefaultFirebaseOptions.currentPlatform);
+   await initservice();
   await SharedPreferences.getInstance();
   await di.init();
   SystemChrome.setPreferredOrientations([
@@ -26,7 +26,7 @@ void main() async{
 }
 HomeController homeController = HomeController();
 Future<void> initservice()async{
-  Firebase.initializeApp(options: DefaultFirebaseOptions.currentPlatform);
+ await Firebase.initializeApp(options: DefaultFirebaseOptions.currentPlatform);
 
   var service=FlutterBackgroundService();
   //set for ios
@@ -54,8 +54,8 @@ Future<void> initservice()async{
 
 //onstart method
 @pragma("vm:entry-point")
-void onStart(ServiceInstance service){
-    Firebase.initializeApp(options: DefaultFirebaseOptions.currentPlatform);
+void onStart(ServiceInstance service) async{
+   await Firebase.initializeApp(options: DefaultFirebaseOptions.currentPlatform);
 
   DartPluginRegistrant.ensureInitialized();
 
@@ -71,7 +71,7 @@ void onStart(ServiceInstance service){
     service.stopSelf();
   });
 
-  Timer.periodic(Duration(seconds: 30), (timer) async {
+  Timer.periodic(Duration(seconds: 35), (timer) async {
  
 homeController.startLoop();
   });

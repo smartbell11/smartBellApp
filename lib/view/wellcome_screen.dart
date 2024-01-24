@@ -75,7 +75,7 @@ class WellcomeScreen  extends  GetView<HomeController> {
             child: Container( height: size.height * 0.8,
               child: StreamBuilder<QuerySnapshot<Map<String, dynamic>>>(
                     stream: FirebaseFirestore.instance
-                        .collection('schedule').limit(3).orderBy("createdAt" , descending: true)
+                        .collection('schedule').limit(3).orderBy("selectedStartTime" , descending: true)
                         .snapshots(),
                     builder: (context, AsyncSnapshot<QuerySnapshot<Map<String, dynamic>>> snapshot) {
                       if (snapshot.hasData) {
@@ -107,7 +107,7 @@ class WellcomeScreen  extends  GetView<HomeController> {
                                           ),
                                           title: Text(
                                       
-                                            'Day: ${document['selectedStartDate']}\nStarts at: ${document['selectedStartTime']}\n For:${document['duration']} seconds',
+                                            'Starts at: ${document['selectedStartTime']}\n For:${document['duration']} seconds',
                                          style: TextStyle(
                                                 color: Colors.white,
                                                 fontSize: 12,

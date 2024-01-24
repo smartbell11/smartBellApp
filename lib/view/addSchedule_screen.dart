@@ -1,6 +1,5 @@
 import 'package:flutter/material.dart';
 import 'package:get/get.dart';
-import 'package:intl/intl.dart';
 import 'package:smart_school_bill/controller/schedule_controller.dart';
 import 'package:smart_school_bill/style/fonts.dart';
 import 'package:smart_school_bill/widgets/custom_input.dart';
@@ -25,40 +24,7 @@ class AddSchedule extends GetView<ScheduleController> {
           child: Column(
             crossAxisAlignment: CrossAxisAlignment.center,
             children: [
-             Obx(
-                () {
-                  return Row(
-                    children: [
-                      Expanded(
-                        child: TextFormField(
-                          controller: TextEditingController(
-                            text: DateFormat('dd-MM-yyyy').format(controller.selectedDate.value),
-                          ),
-                          readOnly: true,
-                          decoration: const InputDecoration(
-                            icon: Icon(Icons.calendar_month),
-                            labelText: 'Select Date',
-                            border: OutlineInputBorder(),
-                          ),
-                          onTap: () async {
-                            DateTime? pickedDate = await showDatePicker(
-                              context: context,
-                              initialDate: controller.selectedDate.value,
-                              firstDate:DateTime.now(),
-                              lastDate: DateTime(2050),
-                            );
-                            if (pickedDate != null && pickedDate != controller.selectedDate.value) {
-                              controller.updateSelectedDate(pickedDate);
-                            }
-                          },
-                        ),
-                      ),
-                    ]
-                    );
-                    },
-             ),
-               SizedBox(height: 10),
-             Obx(
+                   Obx(
               () {
                 return Row(
                   children: [

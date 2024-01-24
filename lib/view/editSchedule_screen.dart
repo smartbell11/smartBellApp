@@ -8,17 +8,15 @@ import 'package:smart_school_bill/widgets/custom_input.dart';
 
 class EditSchedule extends GetView<ScheduleController> {
  final String className;
-  final String startDate;
   final String startTime;
   final String duration;
   final String id;
 
-  const EditSchedule({Key? key, required this.className, required this.startDate, required this.startTime, required this.duration, required this.id}) : super(key: key);
+  const EditSchedule({Key? key, required this.className,required this.startTime, required this.duration, required this.id}) : super(key: key);
 
   @override
   Widget build(BuildContext context) {
      controller.classNameC.text = className;
-     controller.formattedStartDate= startDate;
     controller.formattedTime = startTime;
     controller.durationC.text = duration;
     return AlertDialog(
@@ -37,38 +35,38 @@ class EditSchedule extends GetView<ScheduleController> {
           child: Column(
             crossAxisAlignment: CrossAxisAlignment.center,
             children: [
-               Obx(
-                () {
-                  return Row(
-                    children: [
-                      Expanded(
-                        child: TextFormField(
-                          controller: TextEditingController(
-                            text: DateFormat('dd-MM-yyyy').format(controller.selectedDate.value),
-                          ),
-                          readOnly: true,
-                          decoration: const InputDecoration(
-                            icon: Icon(Icons.calendar_month),
-                            labelText: 'Select Date',
-                            border: OutlineInputBorder(),
-                          ),
-                          onTap: () async {
-                            DateTime? pickedDate = await showDatePicker(
-                              context: context,
-                              initialDate: controller.selectedDate.value,
-                              firstDate:DateTime.now(),
-                              lastDate: DateTime(2050),
-                            );
-                            if (pickedDate != null && pickedDate != controller.selectedDate.value) {
-                              controller.updateSelectedDate(pickedDate);
-                            }
-                          },
-                        ),
-                      ),
-                    ]
-                    );
-                    },
-             ),
+            //    Obx(
+            //     () {
+            //       return Row(
+            //         children: [
+            //           Expanded(
+            //             child: TextFormField(
+            //               controller: TextEditingController(
+            //                 text: DateFormat('dd-MM-yyyy').format(controller.selectedDate.value),
+            //               ),
+            //               readOnly: true,
+            //               decoration: const InputDecoration(
+            //                 icon: Icon(Icons.calendar_month),
+            //                 labelText: 'Select Date',
+            //                 border: OutlineInputBorder(),
+            //               ),
+            //               onTap: () async {
+            //                 DateTime? pickedDate = await showDatePicker(
+            //                   context: context,
+            //                   initialDate: controller.selectedDate.value,
+            //                   firstDate:DateTime.now(),
+            //                   lastDate: DateTime(2050),
+            //                 );
+            //                 if (pickedDate != null && pickedDate != controller.selectedDate.value) {
+            //                   controller.updateSelectedDate(pickedDate);
+            //                 }
+            //               },
+            //             ),
+            //           ),
+            //         ]
+            //         );
+            //         },
+            //  ),
               SizedBox(height: 10),
              Obx(
               () {
