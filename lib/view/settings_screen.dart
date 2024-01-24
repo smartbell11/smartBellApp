@@ -90,32 +90,13 @@ class SettingsScreen extends GetView<HomeController> {
                     blurRadius: 7,
                     offset: const Offset(0, 3),
                   ),
-                  
+
                 ],
-              
+
               ),
               child: Column(
                   children: [
-                  
-                    Row(
-                      children: [
-                        Text("Connectivity Settings", style: robotoHuge,),
-                        SizedBox(width: 10,),
-                           Image.asset(Images.link),
-                      ],
-                    ),
-                   
-                     Row(
-                      mainAxisAlignment: MainAxisAlignment.center,
-                       children: [
-                         Text("bell 1 ", style: robotoHuge,),
-                           Text("Connected", style: TextStyle(color: Colors.green, fontSize: 18, fontWeight: FontWeight.bold),),
-                       ],
-                     ),
-                SizedBox(
-                width: double.infinity,
-                child: OutlinedButton.icon(onPressed: (){}, icon: Icon(Icons.edit), label: Text("Edit"))),
-SizedBox(height: 10,),
+
     Row(
                       children: [
                         Text("Times Settings", style: robotoHuge,),
@@ -124,8 +105,7 @@ SizedBox(height: 10,),
                             child: Image.asset(Images.time)),
                       ],
                     ),
-                   
-                   
+
                 SizedBox(
                 width: double.infinity,
                 child: OutlinedButton.icon(onPressed: (){Get.toNamed(Routes.BELL);}, icon: Icon(Icons.edit), label: Text("Edit")))

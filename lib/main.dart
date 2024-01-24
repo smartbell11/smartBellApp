@@ -12,7 +12,8 @@ import 'package:smart_school_bill/controller/home_controller.dart';
 import 'package:smart_school_bill/firebase_options.dart';
 import 'package:smart_school_bill/routes/app_pages.dart';
 import 'helper/git_di.dart' as di;
- 
+
+
 void main() async{
    WidgetsFlutterBinding.ensureInitialized();
  //  await Firebase.initializeApp(options: DefaultFirebaseOptions.currentPlatform);
@@ -24,8 +25,12 @@ void main() async{
   ]);
   runApp(const MyApp());
 }
+
+
 HomeController homeController = HomeController();
+
 Future<void> initservice()async{
+  
  await Firebase.initializeApp(options: DefaultFirebaseOptions.currentPlatform);
 
   var service=FlutterBackgroundService();
