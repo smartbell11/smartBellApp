@@ -1,47 +1,57 @@
 
 import 'dart:async';
 import 'package:cloud_firestore/cloud_firestore.dart';
+import 'package:firebase_auth/firebase_auth.dart';
 import 'package:firebase_database/firebase_database.dart';
 import 'package:flutter/material.dart';
 import 'package:get/get.dart';
-import 'package:intl/intl.dart';
 import 'package:shared_preferences/shared_preferences.dart';
 
 class HomeController extends GetxController {
-
-    FirebaseFirestore firestore = FirebaseFirestore.instance;
-
+  @override
+void onInit() async {
+  super.onInit();
+getLocalData();
+startLoop() ;
+}
+  FirebaseAuth auth = FirebaseAuth.instance;
    late SharedPreferences _prefs;
 var schoolName = "".obs;
 var phone = "".obs;
 var email = "".obs;
-@override
-void onInit() async {
-  super.onInit();
-fetchScheduleCount();
-startLoop() ;
+var uId = "".obs;
 
-  _prefs = await SharedPreferences.getInstance();
+void getLocalData() async{
+ _prefs = await SharedPreferences.getInstance();
      schoolName.value = _prefs.getString('schoolName') ?? '';
          email.value = _prefs.getString('email') ?? '';
+          uId.value = _prefs.getString('uId') ?? '';
 }
+
+
+
+    FirebaseFirestore firestore = FirebaseFirestore.instance;
+
+
   RxInt scheduleCount = 0.obs; 
 
 
-  Future<void> fetchScheduleCount() async {
+
+Future<int> getScheduleDocumentCount() async {
     try {
-      QuerySnapshot<Map<String, dynamic>> snapshot = await FirebaseFirestore.instance
-          .collection('schedule')
-          .get();
-      scheduleCount.value = snapshot.size ?? 0;
+      QuerySnapshot<Map<String, dynamic>> snapshot =
+          await FirebaseFirestore.instance
+              .collection('schedule')
+              .where('uId', isEqualTo: auth.currentUser!.uid)
+              .get();
+      return snapshot.size;
     } catch (error) {
       print('Error fetching schedule count: $error');
+      return 0;
     }
   }
-  String getScheduleCountText() {
-    return 'You have ${scheduleCount > 3 ? '3+' : scheduleCount} schedules';
-  }
-  
+
+ 
 
  String formatTimeWithAMPM(DateTime dateTime) {
   TimeOfDay timeOfDay = TimeOfDay.fromDateTime(dateTime);
@@ -52,15 +62,16 @@ startLoop() ;
 }
 
 
+bool shouldRing = true;
 
 void startLoop() async {
-
-  DateTime now = DateTime.now();
+if (shouldRing == true){
+   DateTime now = DateTime.now();
   
   String deviceTime = formatTimeWithAMPM(now);
 
   QuerySnapshot<Map<String, dynamic>> scheduleSnapshot =
-      await firestore.collection("schedule").get();
+      await firestore.collection("schedule").where('uId', isEqualTo: uId.value).get();
 
   List<String> selectedStartTimes = scheduleSnapshot.docs
       .map<String>((doc) => doc['selectedStartTime'] as String)
@@ -71,23 +82,23 @@ void startLoop() async {
     if (now.weekday != DateTime.friday && now.weekday != DateTime.saturday) {
 
       await checkAndUpdateFirebase(deviceTime);
+       print('Time matched: $deviceTime');
 
-      print('Time matched: $deviceTime');
+     
     } else {
       print('Today is Friday or Saturday. Firebase value not changed.');
     }
   }
 }
 
-
-
+}
 
 
 Future<void> checkAndUpdateFirebase(String deviceTime) async {
   DatabaseReference reference = FirebaseDatabase.instance.reference().child('bell');
 
   QuerySnapshot<Map<String, dynamic>> scheduleSnapshot =
-      await firestore.collection("schedule").where("selectedStartTime", isEqualTo: deviceTime).get();
+      await firestore.collection("schedule").where('uId', isEqualTo: uId.value).where("selectedStartTime", isEqualTo: deviceTime).get();
 
   bool isStopped = false;
   int durationInSeconds = 0;
@@ -102,23 +113,19 @@ Future<void> checkAndUpdateFirebase(String deviceTime) async {
     print('The specified time $deviceTime is stopped. Firebase value not changed.');
   } else {
     reference.update({'ring': 1});
-    changeTime(deviceTime) ;
     print('Updated Firebase ring value to 1.');
-
+shouldRing = false;
 
     await Future.delayed(Duration(seconds: durationInSeconds)); 
     reference.update({'ring': 0});
     print('Reset Firebase ring value to 0 after $durationInSeconds seconds.');
+
+  Timer(Duration(minutes: 1), () {
+          shouldRing = true;
+          update(); // Notify GetX that the state has changed
+        });
+
   }
-}
-
-
-
-Future<void> changeTime(String deviceTime) async {
-   FirebaseDatabase.instance
-          .reference()
-          .child("bell")
-          .update({"Time": deviceTime});
 }
 
 

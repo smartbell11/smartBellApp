@@ -29,8 +29,9 @@ class ScheduleScreen  extends  GetView<ScheduleController> {
                             ),
                             Expanded(
                               child:  StreamBuilder<QuerySnapshot<Map<String, dynamic>>>(
+                                
                   stream: FirebaseFirestore.instance
-                      .collection('schedule').orderBy("selectedStartTime")
+                      .collection('schedule').where('uId', isEqualTo: controller.auth.currentUser!.uid)
                       .snapshots(),
                   builder: (context, AsyncSnapshot<QuerySnapshot<Map<String, dynamic>>> snapshot) {
                     if (snapshot.hasData) {

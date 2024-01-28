@@ -1,16 +1,30 @@
 
 import 'package:cloud_firestore/cloud_firestore.dart';
+import 'package:firebase_auth/firebase_auth.dart';
 import 'package:flutter/material.dart';
 import 'package:get/get.dart';
+import 'package:shared_preferences/shared_preferences.dart';
+import 'package:smart_school_bill/controller/home_controller.dart';
 
 import 'package:smart_school_bill/widgets/custom_toast.dart';
 
 class ScheduleController extends GetxController {
+FirebaseAuth auth = FirebaseAuth.instance;
+
+HomeController homeController = HomeController();
+   late SharedPreferences _prefs;
+   String? uId;
+void onInit() async {
+  super.onInit();
+  _prefs = await SharedPreferences.getInstance();
+     uId = _prefs.getString('uId') ?? '';
+}
+
 
     FirebaseFirestore firestore = FirebaseFirestore.instance;
     TextEditingController classNameC = TextEditingController();
     TextEditingController durationC = TextEditingController();
-
+ 
 
  Rx<DateTime> selectedTime = DateTime.now().obs;
 
@@ -47,7 +61,8 @@ String docId = classNameC.text +formattedTime;
         "duration": durationC.text,
         "selectedStartTime": formattedTime,
         'isStopped': false,
-        'docId':docId
+        'docId':docId,
+        'uId':uId
       });
 
       CustomToast.successToast("Added Successfully");

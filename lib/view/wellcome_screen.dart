@@ -57,10 +57,25 @@ class WellcomeScreen  extends  GetView<HomeController> {
               child: Column(
                 crossAxisAlignment: CrossAxisAlignment.start,
                 children: [
-                  Row(
-                    mainAxisAlignment:  MainAxisAlignment.spaceBetween,
-                    children: [
-                    Obx(() => Text(controller.getScheduleCountText(), style: robotoMedium)),
+                Row(
+          mainAxisAlignment: MainAxisAlignment.spaceBetween,
+          children: [
+            FutureBuilder<int>(
+              future:controller.getScheduleDocumentCount(),
+              builder: (context, snapshot) {
+                if (snapshot.connectionState == ConnectionState.waiting) {
+                  return CircularProgressIndicator();
+                } else if (snapshot.hasError) {
+                  return Text('Error: ${snapshot.error}');
+                } else {
+                  int scheduleCount = snapshot.data ?? 0;
+                  return Text(
+                    'You have ${scheduleCount > 3 ? '3+' : scheduleCount} schedules',
+                    style: robotoMedium,
+                  );
+                }
+              },
+            ),
                       Image.asset(Images.bellgif)
                     ],
                   ),
@@ -73,9 +88,9 @@ class WellcomeScreen  extends  GetView<HomeController> {
             left: 12.0,
             right: 12.0,
             child: Container( height: size.height * 0.8,
-              child: StreamBuilder<QuerySnapshot<Map<String, dynamic>>>(
-                    stream: FirebaseFirestore.instance
-                        .collection('schedule').limit(3).orderBy("selectedStartTime" , descending: true)
+              child: StreamBuilder<QuerySnapshot<Map<String, dynamic>>> (
+                    stream:  FirebaseFirestore.instance
+                        .collection('schedule').limit(3).where('uId', isEqualTo: controller.auth.currentUser!.uid)
                         .snapshots(),
                     builder: (context, AsyncSnapshot<QuerySnapshot<Map<String, dynamic>>> snapshot) {
                       if (snapshot.hasData) {
@@ -124,7 +139,7 @@ class WellcomeScreen  extends  GetView<HomeController> {
                           return Center(child: Text("No data available."));
                         }
                       }
-                      return Center(child: CircularProgressIndicator());
+                      return Center(child: Text("No data available."));
               }
               ),
             )   

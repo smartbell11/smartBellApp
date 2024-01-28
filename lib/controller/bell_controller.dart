@@ -1,11 +1,13 @@
 import 'dart:async';
 import 'package:cloud_firestore/cloud_firestore.dart';
+import 'package:firebase_auth/firebase_auth.dart';
 import 'package:get/get.dart';
 import 'package:get/get_state_manager/src/simple/get_controllers.dart';
 import 'package:smart_school_bill/widgets/custom_toast.dart';
 
 class BellControlController extends GetxController {
     FirebaseFirestore firestore = FirebaseFirestore.instance;
+FirebaseAuth auth = FirebaseAuth.instance;
 
 @override
   void onInit() {
@@ -15,7 +17,7 @@ class BellControlController extends GetxController {
   Future<void> initSwitchStates() async {
     try {
       QuerySnapshot<Map<String, dynamic>> scheduleSnapshot =
-          await firestore.collection("schedule").get();
+          await firestore.collection("schedule").where('uId', isEqualTo: auth.currentUser!.uid) . get();
 
       for (QueryDocumentSnapshot<Map<String, dynamic>> doc in scheduleSnapshot.docs) {
         String time = doc.id;
@@ -33,7 +35,7 @@ class BellControlController extends GetxController {
 Future<List<Map<String, dynamic>>> fetchTimesFromSchedule() async {
   try {
     QuerySnapshot<Map<String, dynamic>> scheduleSnapshot =
-        await firestore.collection("schedule").get();
+        await firestore.collection("schedule").where('uId', isEqualTo: auth.currentUser!.uid ).get();
 
     List<Map<String, dynamic>> scheduleData = scheduleSnapshot.docs
         .map<Map<String, dynamic>>((doc) {
@@ -57,7 +59,7 @@ Future<List<Map<String, dynamic>>> fetchTimesFromSchedule() async {
 
 void StopAllTimes() async {
     try {
-      QuerySnapshot querySnapshot = await firestore.collection("schedule").get();
+      QuerySnapshot querySnapshot = await firestore.collection("schedule").where('uId', isEqualTo: auth.currentUser!.uid).get();
          CustomToast.successToast( 'All times stopped' );
       for (QueryDocumentSnapshot document in querySnapshot.docs) {
         await document.reference.update({'isStopped': true});
@@ -70,7 +72,7 @@ void StopAllTimes() async {
 
 void ResumeAllTimes() async {
     try {
-      QuerySnapshot querySnapshot = await firestore.collection("schedule").get();
+      QuerySnapshot querySnapshot = await firestore.collection("schedule").where('uId', isEqualTo: auth.currentUser!.uid).get();
          CustomToast.successToast( 'All times Resumed' );
       for (QueryDocumentSnapshot document in querySnapshot.docs) {
         await document.reference.update({'isStopped': false});

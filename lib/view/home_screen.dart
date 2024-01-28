@@ -4,6 +4,7 @@ import 'package:get/get.dart';
 import 'package:google_nav_bar/google_nav_bar.dart';
 
 import 'package:smart_school_bill/controller/home_controller.dart';
+import 'package:smart_school_bill/controller/login_controller.dart';
 import 'package:smart_school_bill/helper/alertExitApp.dart';
 import 'package:smart_school_bill/style/fonts.dart';
 import 'package:smart_school_bill/style/images.dart';
@@ -11,7 +12,7 @@ import 'package:smart_school_bill/view/schedule_screen.dart';
 import 'package:smart_school_bill/view/settings_screen.dart';
 import 'package:smart_school_bill/view/wellcome_screen.dart';
 
-class HomeScreen extends GetView<HomeController> {
+class HomeScreen extends GetView<LoginController> {
 
  final RxInt _selectedIndex = 0.obs;
  

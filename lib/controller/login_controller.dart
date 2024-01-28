@@ -82,10 +82,12 @@ Future<void> login() async {
         .then((data) {
             schoolName = data['schoolName'];
     
-    
+
       email = data['email'];
       sharedPreferences.setString('schoolName', schoolName!);
        sharedPreferences.setString('email', email!);
+     sharedPreferences.setString('uId', auth.currentUser!.uid);
+
     });
   }
 

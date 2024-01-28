@@ -72,12 +72,12 @@ class SettingsScreen extends GetView<HomeController> {
             ),
           ),
           Positioned(
-            bottom: size.height * 0.05,
+            bottom: size.height * 0.13,
             left: 12.0,
             right: 12.0,
             child: SizedBox(
               width: double.infinity,
-              height: size.height * 0.38,
+              height: size.height * 0.23,
               child: Container(
               padding: EdgeInsets.all(26.0),
               decoration: BoxDecoration(

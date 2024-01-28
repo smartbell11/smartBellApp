@@ -3,10 +3,13 @@ import 'dart:io';
 import 'dart:ui';
 
 import 'package:firebase_core/firebase_core.dart';
+import 'package:firebase_database/firebase_database.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter/services.dart';
 import 'package:flutter_background_service/flutter_background_service.dart';
+import 'package:get/get.dart';
 import 'package:get/get_navigation/get_navigation.dart';
+import 'package:intl/intl.dart';
 import 'package:shared_preferences/shared_preferences.dart';
 import 'package:smart_school_bill/controller/home_controller.dart';
 import 'package:smart_school_bill/firebase_options.dart';
@@ -18,8 +21,9 @@ void main() async{
    WidgetsFlutterBinding.ensureInitialized();
  //  await Firebase.initializeApp(options: DefaultFirebaseOptions.currentPlatform);
    await initservice();
+    await di.init();
   await SharedPreferences.getInstance();
-  await di.init();
+
   SystemChrome.setPreferredOrientations([
     DeviceOrientation.portraitUp,
   ]);
@@ -75,10 +79,25 @@ void onStart(ServiceInstance service) async{
   service.on("stopService").listen((event) {
     service.stopSelf();
   });
+  homeController.getLocalData();
 
-  Timer.periodic(Duration(seconds: 35), (timer) async {
+  Timer.periodic(Duration(seconds: 5), (timer) async {
  
 homeController.startLoop();
+   
+
+  });
+
+  Timer.periodic(Duration(minutes: 30), (timer) async {
+ 
+
+   String formattedTime = DateFormat('h:mm a').format(DateTime.now());
+   FirebaseDatabase.instance
+          .reference()
+          .child("bell")
+          .update({"Time": formattedTime});
+
+
   });
   print("Background service ${DateTime.now()}") ;
 
