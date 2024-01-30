@@ -4,14 +4,12 @@ import 'package:firebase_auth/firebase_auth.dart';
 import 'package:flutter/material.dart';
 import 'package:get/get.dart';
 import 'package:shared_preferences/shared_preferences.dart';
-import 'package:smart_school_bill/controller/home_controller.dart';
 
 import 'package:smart_school_bill/widgets/custom_toast.dart';
 
 class ScheduleController extends GetxController {
 FirebaseAuth auth = FirebaseAuth.instance;
 
-HomeController homeController = HomeController();
    late SharedPreferences _prefs;
    String? uId;
 void onInit() async {

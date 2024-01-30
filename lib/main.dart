@@ -2,6 +2,7 @@ import 'dart:async';
 import 'dart:io';
 import 'dart:ui';
 
+import 'package:cloud_firestore/cloud_firestore.dart';
 import 'package:firebase_core/firebase_core.dart';
 import 'package:firebase_database/firebase_database.dart';
 import 'package:flutter/material.dart';
@@ -30,11 +31,12 @@ void main() async{
   runApp(const MyApp());
 }
 
+    FirebaseFirestore firestore = FirebaseFirestore.instance;
 
-HomeController homeController = HomeController();
+ HomeController homeController = HomeController();
 
 Future<void> initservice()async{
-  
+
  await Firebase.initializeApp(options: DefaultFirebaseOptions.currentPlatform);
 
   var service=FlutterBackgroundService();
@@ -79,18 +81,35 @@ void onStart(ServiceInstance service) async{
   service.on("stopService").listen((event) {
     service.stopSelf();
   });
-  homeController.getLocalData();
 
-  Timer.periodic(Duration(seconds: 5), (timer) async {
- 
-homeController.startLoop();
-   
+ await homeController.getLocalData();
 
+
+ final databaseReference =FirebaseDatabase.instance.reference().child('bell');
+
+databaseReference.onValue.listen((event) {
+    DataSnapshot snapshot = event.snapshot;
+    Map<dynamic, dynamic>? dataMap = snapshot.value as Map<dynamic, dynamic>?;
+
+    if (dataMap != null) {
+  
+    
+     String  currentUserId = dataMap['currentUserId'];
+  
+
+if (currentUserId.isNotEmpty){
+homeController.uId.value = currentUserId;
+}
+    }
   });
-
-  Timer.periodic(Duration(minutes: 30), (timer) async {
  
 
+ Timer.periodic(Duration(seconds: 2), (timer) async { 
+await homeController.startLoop();
+ });
+ 
+
+  Timer.periodic(Duration(seconds:5), (timer) async {
    String formattedTime = DateFormat('h:mm a').format(DateTime.now());
    FirebaseDatabase.instance
           .reference()
@@ -103,6 +122,12 @@ homeController.startLoop();
 
 }
 
+ 
+
+ 
+
+
+
 //iosbackground
 @pragma("vm:entry-point")
 Future<bool> iosBackground(ServiceInstance service)async{
@@ -111,6 +136,14 @@ Future<bool> iosBackground(ServiceInstance service)async{
 
   return true;
 }
+
+
+
+
+
+
+
+
 
 
 
@@ -124,7 +157,7 @@ class MyApp extends StatelessWidget {
       colorScheme: ColorScheme.fromSeed(seedColor: Colors.deepPurple),
         useMaterial3: true,
       ),   
-       initialRoute: Routes.LOGIN,
+       initialRoute: Routes.FIRSTSCREEN,
       getPages: AppPages.routes,
     );
   }

@@ -4,6 +4,7 @@ import 'package:shared_preferences/shared_preferences.dart';
 import 'package:smart_school_bill/controller/bell_controller.dart';
 import 'package:smart_school_bill/controller/forgetPassword_controller.dart';
 import 'package:smart_school_bill/controller/home_controller.dart';
+import 'package:smart_school_bill/controller/login_controller.dart';
 import 'package:smart_school_bill/controller/schedule_controller.dart';
 import 'package:smart_school_bill/controller/schoolInfo_controller.dart';
 import 'package:smart_school_bill/controller/signUp_controller.dart';
@@ -11,7 +12,6 @@ import 'package:smart_school_bill/controller/signUp_controller.dart';
 
 
 
-import '../controller/login_controller.dart';
 
 Future init() async {
   final sharedPreferences = await SharedPreferences.getInstance();

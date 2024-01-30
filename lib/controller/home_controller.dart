@@ -11,8 +11,8 @@ class HomeController extends GetxController {
   @override
 void onInit() async {
   super.onInit();
-getLocalData();
-startLoop() ;
+await getLocalData();
+await startLoop();
 }
   FirebaseAuth auth = FirebaseAuth.instance;
    late SharedPreferences _prefs;
@@ -21,11 +21,12 @@ var phone = "".obs;
 var email = "".obs;
 var uId = "".obs;
 
-void getLocalData() async{
+Future getLocalData() async{
  _prefs = await SharedPreferences.getInstance();
      schoolName.value = _prefs.getString('schoolName') ?? '';
          email.value = _prefs.getString('email') ?? '';
-          uId.value = _prefs.getString('uId') ?? '';
+       //   uId.value = _prefs.getString('uId') ?? '';
+          update();
 }
 
 
@@ -61,11 +62,12 @@ Future<int> getScheduleDocumentCount() async {
   return '$formattedHour:${timeOfDay.minute.toString().padLeft(2, '0')} $period';
 }
 
+RxBool shouldRing = true.obs;
 
-bool shouldRing = true;
 
-void startLoop() async {
-if (shouldRing == true){
+Future startLoop() async {
+  print("it is ${shouldRing.value}");
+if(shouldRing.isTrue){
    DateTime now = DateTime.now();
   
   String deviceTime = formatTimeWithAMPM(now);
@@ -89,8 +91,10 @@ if (shouldRing == true){
       print('Today is Friday or Saturday. Firebase value not changed.');
     }
   }
-}
 
+}else{
+  print("it will not do anything");
+}
 }
 
 
@@ -112,17 +116,20 @@ Future<void> checkAndUpdateFirebase(String deviceTime) async {
   if (isStopped) {
     print('The specified time $deviceTime is stopped. Firebase value not changed.');
   } else {
-    reference.update({'ring': 1});
+    shouldRing.value = false;
+
+    reference.update({'Ring': 1});
+        print("it is true ring ${shouldRing.value}");
+
     print('Updated Firebase ring value to 1.');
-shouldRing = false;
 
     await Future.delayed(Duration(seconds: durationInSeconds)); 
-    reference.update({'ring': 0});
+    reference.update({'Ring': 0});
     print('Reset Firebase ring value to 0 after $durationInSeconds seconds.');
 
-  Timer(Duration(minutes: 1), () {
-          shouldRing = true;
-          update(); // Notify GetX that the state has changed
+  Timer(Duration(minutes: 2), () {
+          shouldRing.value = true;
+          update(); 
         });
 
   }

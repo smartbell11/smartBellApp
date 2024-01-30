@@ -1,9 +1,11 @@
 
 import 'package:cloud_firestore/cloud_firestore.dart';
 import 'package:firebase_auth/firebase_auth.dart';
+import 'package:firebase_database/firebase_database.dart';
 import 'package:flutter/material.dart';
 import 'package:get/get.dart';
 import 'package:shared_preferences/shared_preferences.dart';
+import 'package:smart_school_bill/controller/home_controller.dart';
 import 'package:smart_school_bill/routes/app_pages.dart';
 import 'package:smart_school_bill/widgets/custom_toast.dart';
 
@@ -11,13 +13,15 @@ import 'package:smart_school_bill/widgets/custom_toast.dart';
 
 
 class LoginController extends GetxController {
+   HomeController homeController = HomeController();
+
    FirebaseAuth auth = FirebaseAuth.instance;
      FirebaseFirestore firestore = FirebaseFirestore.instance;
   LoginController({required this.sharedPreferences});
 
   TextEditingController emailC = TextEditingController();
   TextEditingController passC = TextEditingController();
- final SharedPreferences sharedPreferences;
+ late SharedPreferences sharedPreferences;
 
  var isLoading = false.obs;
 
@@ -33,11 +37,10 @@ Future<void> login() async {
       );
 
       await  getUser();
-          
-          // Get the user's email and username from Firebase Authentication
+ await updateUserIdinRealTime();
           String email = auth.currentUser!.email ?? '';
-          
-          // Store the user's email andusername in SharedPreferences
+      
+        
           sharedPreferences.setString('email', email);
           
 
@@ -51,14 +54,14 @@ Future<void> login() async {
       if (e.code == 'user-not-found') {
         CustomToast.errorToast("Account not found");
       } else if (e.code == 'wrong-password') {
-        CustomToast.errorToast("Wrong Password");
+        CustomToast.errorToast("Wrong Email or Password");
       } else {
-        CustomToast.errorToast("${"Error_because".tr}${e.toString()}");
+        CustomToast.errorToast("Wrong Email or Password");
         print('the error $e');
       }
       isLoading.value = false;
     } catch (e) {
-      CustomToast.errorToast("${"Error_because".tr}${e.toString()}");
+        CustomToast.errorToast("Wrong Email or Password");
       print('the error $e');
       isLoading.value = false;
     }
@@ -87,12 +90,21 @@ Future<void> login() async {
       sharedPreferences.setString('schoolName', schoolName!);
        sharedPreferences.setString('email', email!);
      sharedPreferences.setString('uId', auth.currentUser!.uid);
-
     });
+
+ 
   }
 
 
-
+Future updateUserIdinRealTime() async {
+  try { FirebaseDatabase.instance
+          .reference()
+          .child("bell").update({'currentUserId':auth.currentUser!.uid});
+ 
+  } catch (error) {
+    print("error is $error");
+  }
+}
 
  
 }
